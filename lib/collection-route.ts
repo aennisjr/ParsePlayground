@@ -1,16 +1,13 @@
 import type { NextRequest } from "next/server";
-import { listQuery, respond } from "./api";
+import { listQuery, respond, type ListConfig } from "./api";
 import { recordRequest } from "./stats";
 
 /** Builds a GET handler for a list endpoint over a static dataset. */
 export function collectionRoute<T extends Record<string, unknown>>(
   rows: T[],
-  cfg: {
+  cfg: ListConfig<T> & {
     root: string;
     item: string;
-    searchFields: (keyof T)[];
-    filterFields: (keyof T)[];
-    sortFields: (keyof T)[];
     /** Strip heavy fields from list responses. */
     summarize?: (row: T) => Record<string, unknown>;
   },

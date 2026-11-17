@@ -1,18 +1,21 @@
 import type { MetadataRoute } from "next";
-import { DATASETS } from "@/lib/data";
+import { authors, DATASETS } from "@/lib/data";
 import { absoluteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages: MetadataRoute.Sitemap = ["/", "/products", "/login", "/api-docs"].map((path) => ({
+  const entry = (path: string, priority: number, lastModified?: string, changeFrequency: "weekly" | "monthly" = "monthly") => ({
     url: absoluteUrl(path),
-    changeFrequency: "weekly",
-    priority: path === "/" ? 1 : 0.7,
-  }));
-  const products: MetadataRoute.Sitemap = DATASETS.products.map((p) => ({
-    url: absoluteUrl(`/products/${p.slug}`),
-    lastModified: p.createdAt,
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
-  return [...pages, ...products];
+    ...(lastModified && { lastModified }),
+    changeFrequency,
+    priority,
+  });
+  return [
+    entry("/", 1, undefined, "weekly"),
+    ...["/products", "/blog", "/jobs", "/real-estate", "/api-docs", "/login"].map((p) => entry(p, 0.8, undefined, "weekly")),
+    ...DATASETS.products.map((p) => entry(`/products/${p.slug}`, 0.6, p.createdAt)),
+    ...DATASETS.blog.map((p) => entry(`/blog/${p.slug}`, 0.6, p.publishedAt)),
+    ...authors.map((a) => entry(`/blog/authors/${a.slug}`, 0.4)),
+    ...DATASETS.jobs.map((j) => entry(`/jobs/${j.slug}`, 0.6, j.postedAt)),
+    ...DATASETS["real-estate"].map((p) => entry(`/real-estate/${p.slug}`, 0.6, p.listedAt)),
+  ];
 }

@@ -7,9 +7,9 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const AREAS = [
   { title: "E-commerce", count: DATASETS.products.length, unit: "products", href: "/products", api: "/api/products", text: "Categories, brands, inventory, ratings and reviews with filters, sorting and search." },
-  { title: "Blog", count: DATASETS.blog.length, unit: "articles", href: "/api/blog", api: "/api/blog", text: "Authors, categories and publication dates — ideal for crawling and pagination practice." },
-  { title: "Job board", count: DATASETS.jobs.length, unit: "listings", href: "/api/jobs", api: "/api/jobs", text: "Salaries in multiple currencies, locations, tags and employment types." },
-  { title: "Real estate", count: DATASETS["real-estate"].length, unit: "properties", href: "/api/real-estate", api: "/api/real-estate", text: "Structured addresses, prices for sale or rent, and property features." },
+  { title: "Blog", count: DATASETS.blog.length, unit: "articles", href: "/blog", api: "/api/blog", text: "Authors, categories and publication dates — ideal for crawling and pagination practice." },
+  { title: "Job board", count: DATASETS.jobs.length, unit: "listings", href: "/jobs", api: "/api/jobs", text: "Salaries in multiple currencies, locations, tags and employment types." },
+  { title: "Real estate", count: DATASETS["real-estate"].length, unit: "properties", href: "/real-estate", api: "/api/real-estate", text: "Structured addresses, prices for sale or rent, and property features." },
 ];
 
 export default function Home() {

@@ -29,6 +29,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Hosts expose the commit only at build time (Netlify: COMMIT_REF,
+  // Vercel: VERCEL_GIT_COMMIT_SHA), so inline it for /api/health.
+  env: { COMMIT_REF: process.env.COMMIT_REF ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "" },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

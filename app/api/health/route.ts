@@ -9,7 +9,7 @@ export function GET() {
     {
       status: "ok",
       time: new Date().toISOString(),
-      commit: process.env.COMMIT_REF ?? null,
+      commit: process.env.COMMIT_REF || null,
       datasets: Object.fromEntries(Object.entries(DATASETS).map(([k, v]) => [k, v.length])),
     },
     { headers: { "Cache-Control": "no-store" } },

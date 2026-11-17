@@ -41,7 +41,13 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
   if (!rule.roles.includes(session.role)) {
-    return NextResponse.rewrite(new URL("/forbidden", req.url), { status: 403 });
+    // Serve the styled /forbidden page with a real 403. A rewrite with
+    // { status: 403 } is not honoured by every host (Netlify returns 200).
+    const page = await fetch(new URL("/forbidden", req.url), { headers: { accept: "text/html" } });
+    return new NextResponse(page.body, {
+      status: 403,
+      headers: { "content-type": page.headers.get("content-type") ?? "text/html; charset=utf-8", "cache-control": "no-store" },
+    });
   }
   return NextResponse.next();
 }

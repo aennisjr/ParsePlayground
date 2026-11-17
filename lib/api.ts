@@ -26,10 +26,8 @@ function xmlNode(key: string, v: unknown): string {
 function toCsv(rows: Record<string, unknown>[]): string {
   if (!rows.length) return "";
   // Nested objects (e.g. reviews, address) are left out of CSV; arrays of scalars are joined with "|".
-  const cols = Object.keys(rows[0]).filter((k) => {
-    const v = rows[0][k];
-    return v === null || typeof v !== "object" || (Array.isArray(v) && v.every((x) => typeof x !== "object"));
-  });
+  const isFlat = (v: unknown) => v === null || typeof v !== "object" || (Array.isArray(v) && v.every((x) => typeof x !== "object"));
+  const cols = Object.keys(rows[0]).filter((k) => rows.every((r) => isFlat(r[k])));
   const esc = (v: unknown) => {
     const s = v == null ? "" : Array.isArray(v) ? v.join("|") : String(v);
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
@@ -81,7 +79,17 @@ export function decodeCursor(cursor: string): number | null {
  *   ?offset=40&limit=20       (offset-based)
  *   ?cursor=<opaque>&limit=20 (cursor-based)
  */
-export type ListConfig<T> = { searchFields: (keyof T)[]; filterFields: (keyof T)[]; sortFields: (keyof T)[]; defaultLimit?: number };
+export type ListConfig<T> = {
+  searchFields: (keyof T)[];
+  /** Exact-match filters; the query parameter has the same name as the field. */
+  filterFields: (keyof T)[];
+  sortFields: (keyof T)[];
+  /** Numeric range filters. Defaults to min_price / max_price on `price` when the rows have one. */
+  ranges?: { field: keyof T; min?: string; max?: string }[];
+  /** Filters where the row's array field must contain the value, e.g. ?tag=python on `tags`. */
+  containsFilters?: { param: string; field: keyof T }[];
+  defaultLimit?: number;
+};
 
 export function listQuery<T extends Record<string, unknown>>(url: URL, rows: T[], cfg: ListConfig<T>) {
   const sp = url.searchParams;
@@ -94,10 +102,17 @@ export function listQuery<T extends Record<string, unknown>>(url: URL, rows: T[]
     const v = sp.get(String(f));
     if (v !== null) result = result.filter((r) => String(r[f]).toLowerCase() === v.toLowerCase());
   }
-  const min = sp.get("min_price");
-  const max = sp.get("max_price");
-  if (min && "price" in (rows[0] ?? {})) result = result.filter((r) => Number(r.price) >= Number(min));
-  if (max && "price" in (rows[0] ?? {})) result = result.filter((r) => Number(r.price) <= Number(max));
+  const ranges = cfg.ranges ?? ("price" in (rows[0] ?? {}) ? [{ field: "price" as keyof T, min: "min_price", max: "max_price" }] : []);
+  for (const { field, min, max } of ranges) {
+    const lo = min ? sp.get(min) : null;
+    const hi = max ? sp.get(max) : null;
+    if (lo && !Number.isNaN(Number(lo))) result = result.filter((r) => Number(r[field]) >= Number(lo));
+    if (hi && !Number.isNaN(Number(hi))) result = result.filter((r) => Number(r[field]) <= Number(hi));
+  }
+  for (const { param, field } of cfg.containsFilters ?? []) {
+    const v = sp.get(param)?.toLowerCase();
+    if (v) result = result.filter((r) => Array.isArray(r[field]) && (r[field] as unknown[]).some((x) => String(x).toLowerCase() === v));
+  }
 
   const sort = sp.get("sort");
   if (sort) {
