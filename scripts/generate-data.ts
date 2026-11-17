@@ -116,7 +116,7 @@ const products = Array.from({ length: 200 }, (_, i) => {
     inStock: inventory > 0,
     rating,
     reviewCount: reviews.length,
-    description: `The ${name} is a ${category.toLowerCase()} product from ${brand}, designed for everyday reliability. It ships with a ${int(1, 3)}-year warranty and free returns within 30 days.`,
+    description: `The ${name} is part of the ${brand} ${category.toLowerCase()} range, designed for everyday reliability. It ships with a ${int(1, 3)}-year warranty and free returns within 30 days.`,
     tags: pickMany(["bestseller", "new", "eco", "refurbished", "limited", "gift-idea", "premium", "budget"], int(0, 3)),
     createdAt: daysAgo(1, 900),
     reviews,

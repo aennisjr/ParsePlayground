@@ -17,7 +17,7 @@ export function collectionRoute<T extends Record<string, unknown>>(
 ) {
   return function GET(req: NextRequest) {
     recordRequest(req.nextUrl.pathname);
-    const { data, meta, links } = listQuery(req, rows, cfg);
+    const { data, meta, links } = listQuery(req.nextUrl, rows, cfg);
     return respond(req, { data: cfg.summarize ? data.map(cfg.summarize) : data, meta, links }, cfg);
   };
 }

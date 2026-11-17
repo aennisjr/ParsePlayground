@@ -1,11 +1,18 @@
 import type { MetadataRoute } from "next";
+import { DATASETS } from "@/lib/data";
 import { absoluteUrl } from "@/lib/site";
 
-/** Detail pages for products, posts, jobs and properties are added as those sections are built. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  return ["/", "/login", "/api-docs"].map((path) => ({
+  const pages: MetadataRoute.Sitemap = ["/", "/products", "/login", "/api-docs"].map((path) => ({
     url: absoluteUrl(path),
     changeFrequency: "weekly",
-    priority: path === "/" ? 1 : 0.6,
+    priority: path === "/" ? 1 : 0.7,
   }));
+  const products: MetadataRoute.Sitemap = DATASETS.products.map((p) => ({
+    url: absoluteUrl(`/products/${p.slug}`),
+    lastModified: p.createdAt,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+  return [...pages, ...products];
 }

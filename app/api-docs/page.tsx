@@ -35,9 +35,10 @@ export default function ApiDocs() {
       <ul>
         <li>Page-based: <code>?page=2&amp;per_page=20</code></li>
         <li>Offset-based: <code>?offset=40&amp;limit=20</code></li>
-        <li>Cursor-based: start with <code>?cursor=&amp;limit=20</code>, then pass <code>meta.nextCursor</code> as <code>?cursor=</code> until it is <code>null</code></li>
+        <li className="text-break">Cursor-based: start with <code>?cursor=&amp;limit=20</code>, then pass <code>meta.nextCursor</code> as <code>?cursor=</code> until it is <code>null</code></li>
       </ul>
-      <table className="table bg-white shadow-sm mt-4" id="endpoints">
+      <div className="table-responsive mt-4">
+      <table className="table bg-white shadow-sm mb-0" id="endpoints">
         <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
         <tbody>
           {ENDPOINTS.map(([m, p, d]) => (
@@ -45,6 +46,7 @@ export default function ApiDocs() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

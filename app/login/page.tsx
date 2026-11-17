@@ -19,7 +19,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="container py-5">
-      <div className="row justify-content-center g-5">
+      <div className="row justify-content-center g-4 g-lg-5">
         <div className="col-md-6 col-lg-5">
           <div className="card border-0 shadow-sm">
             <div className="card-body p-4">

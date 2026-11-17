@@ -81,12 +81,10 @@ export function decodeCursor(cursor: string): number | null {
  *   ?offset=40&limit=20       (offset-based)
  *   ?cursor=<opaque>&limit=20 (cursor-based)
  */
-export function listQuery<T extends Record<string, unknown>>(
-  req: NextRequest,
-  rows: T[],
-  cfg: { searchFields: (keyof T)[]; filterFields: (keyof T)[]; sortFields: (keyof T)[] },
-) {
-  const sp = req.nextUrl.searchParams;
+export type ListConfig<T> = { searchFields: (keyof T)[]; filterFields: (keyof T)[]; sortFields: (keyof T)[]; defaultLimit?: number };
+
+export function listQuery<T extends Record<string, unknown>>(url: URL, rows: T[], cfg: ListConfig<T>) {
+  const sp = url.searchParams;
   let result = rows;
 
   const q = sp.get("q")?.trim().toLowerCase();
@@ -108,14 +106,16 @@ export function listQuery<T extends Record<string, unknown>>(
     if (cfg.sortFields.includes(key)) {
       result = [...result].sort((a, b) => {
         const av = a[key] as never, bv = b[key] as never;
-        const cmp = av === bv ? 0 : av == null ? 1 : bv == null ? -1 : av > bv ? 1 : -1;
+        // Nulls always sort last, whichever direction is requested.
+        if (av == null || bv == null) return av == bv ? 0 : av == null ? 1 : -1;
+        const cmp = av === bv ? 0 : av > bv ? 1 : -1;
         return desc ? -cmp : cmp;
       });
     }
   }
 
   const total = result.length;
-  const limit = Math.min(100, Math.max(1, Number(sp.get("limit") ?? sp.get("per_page") ?? 20) || 20));
+  const limit = Math.min(100, Math.max(1, Number(sp.get("limit") ?? sp.get("per_page") ?? cfg.defaultLimit ?? 20) || (cfg.defaultLimit ?? 20)));
   let offset = 0;
   let mode: "page" | "offset" | "cursor" = "page";
   if (sp.has("cursor")) {
@@ -132,9 +132,8 @@ export function listQuery<T extends Record<string, unknown>>(
 
   const data = result.slice(offset, offset + limit);
   const hasMore = offset + limit < total;
-  const self = new URL(req.nextUrl);
   const link = (patch: Record<string, string | null>) => {
-    const u = new URL(self);
+    const u = new URL(url);
     for (const [k, v] of Object.entries(patch)) (v === null ? u.searchParams.delete(k) : u.searchParams.set(k, v));
     return u.pathname + u.search;
   };

@@ -18,3 +18,27 @@ body {
 code.endpoint {
   font-size: 0.9em;
 }
+.product-image {
+  width: 100%;
+  user-select: none;
+}
+.product-card .card-title {
+  min-height: 2.5em;
+}
+.filters-details > summary {
+  list-style: none;
+}
+.filters-details > summary::-webkit-details-marker {
+  display: none;
+}
+@media (min-width: 992px) {
+  .filters-details > summary {
+    display: none;
+  }
+  /* Show the filter form on large screens even while <details> is closed. */
+  .filters-details::details-content {
+    content-visibility: visible;
+    display: block;
+    height: auto;
+  }
+}
