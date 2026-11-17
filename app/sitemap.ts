@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
   return [
     entry("/", 1, undefined, "weekly"),
-    ...["/products", "/blog", "/jobs", "/real-estate", "/api-docs", "/login"].map((p) => entry(p, 0.8, undefined, "weekly")),
+    ...["/products", "/blog", "/jobs", "/real-estate", "/pagination", "/pagination/cursor", "/pagination/load-more", "/pagination/infinite-scroll", "/api-docs", "/login"].map((p) => entry(p, 0.8, undefined, "weekly")),
     ...DATASETS.products.map((p) => entry(`/products/${p.slug}`, 0.6, p.createdAt)),
     ...DATASETS.blog.map((p) => entry(`/blog/${p.slug}`, 0.6, p.publishedAt)),
     ...authors.map((a) => entry(`/blog/authors/${a.slug}`, 0.4)),

@@ -6,6 +6,8 @@ import authors from "@/data/generated/authors.json";
 import taxonomy from "@/data/generated/taxonomy.json";
 
 export type Product = (typeof products)[number];
+/** A product as returned by list endpoints (reviews stripped). */
+export type ProductSummary = Omit<Product, "reviews">;
 export type BlogPost = (typeof blog)[number];
 export type Job = (typeof jobs)[number];
 export type Property = (typeof realEstate)[number];

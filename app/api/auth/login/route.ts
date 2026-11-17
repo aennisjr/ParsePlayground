@@ -9,6 +9,7 @@ import {
   signSession,
 } from "@/lib/auth";
 import { CSRF_COOKIE, verifyCsrf } from "@/lib/csrf";
+import { redirectTo } from "@/lib/redirect";
 
 /**
  * POST /api/auth/login
@@ -29,10 +30,9 @@ export async function POST(req: NextRequest) {
 
   const fail = (status: number, code: string, message: string) => {
     if (isJson) return NextResponse.json({ ok: false, error: code, message }, { status });
-    const url = new URL("/login", req.url);
-    url.searchParams.set("error", code);
-    if (next !== "/dashboard") url.searchParams.set("next", next);
-    return NextResponse.redirect(url, 303);
+    const qs = new URLSearchParams({ error: code });
+    if (next !== "/dashboard") qs.set("next", next);
+    return redirectTo(`/login?${qs}`);
   };
 
   const csrfOk = await verifyCsrf(req.cookies.get(CSRF_COOKIE)?.value, fields.csrfToken || req.headers.get("x-csrf-token"));
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   const res = isJson
     ? NextResponse.json({ ok: true, user: { username: user.username, role: user.role }, redirect: next })
-    : NextResponse.redirect(new URL(next, req.url), 303);
+    : redirectTo(next);
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(remember ? REMEMBER_ME_TTL_SECONDS : undefined));
   res.cookies.delete(CSRF_COOKIE); // rotate the CSRF token after login
   return res;

@@ -14,7 +14,7 @@ export function runListing<T extends Record<string, unknown>>(
 ) {
   const params = cleanParams(rawParams);
   // Listing pages only use page-based pagination; drop API-only parameters.
-  for (const k of ["cursor", "offset", "limit", "per_page", "format"]) delete params[k];
+  for (const k of ["cursor", "offset", "limit", "per_page", "format", "delay"]) delete params[k];
   const url = new URL(`http://local${basePath}${buildQuery(params)}`);
   const { data, meta } = listQuery(url, rows, cfg);
   const page = Number(meta.page ?? 1);

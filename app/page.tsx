@@ -50,6 +50,17 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        <section className="mt-5" aria-labelledby="challenges-heading">
+          <h2 className="h4" id="challenges-heading">Pagination challenges</h2>
+          <p className="text-body-secondary">The same 200 products delivered four ways. Can your scraper collect all of them each time?</p>
+          <div className="d-flex flex-wrap gap-2" data-testid="challenge-links">
+            <Link href="/products" className="btn btn-outline-dark btn-sm">Numbered pages</Link>
+            <Link href="/pagination/cursor" className="btn btn-outline-dark btn-sm">Cursor pages</Link>
+            <Link href="/pagination/load-more" className="btn btn-outline-dark btn-sm">Load more button</Link>
+            <Link href="/pagination/infinite-scroll" className="btn btn-outline-dark btn-sm">Infinite scroll</Link>
+          </div>
+        </section>
       </div>
     </>
   );

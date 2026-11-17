@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE } from "@/lib/auth";
+import { redirectTo } from "@/lib/redirect";
 
 /**
  * POST /api/auth/logout — clears the session cookie.
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
   const wantsJson = (req.headers.get("accept") ?? "").includes("application/json");
   const res = wantsJson
     ? NextResponse.json({ ok: true })
-    : NextResponse.redirect(new URL("/login?loggedOut=1", req.url), 303);
+    : redirectTo("/login?loggedOut=1");
   res.cookies.delete(SESSION_COOKIE);
   return res;
 }

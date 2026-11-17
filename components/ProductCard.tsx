@@ -1,10 +1,10 @@
 import Link from "next/link";
-import type { Product } from "@/lib/data";
+import type { ProductSummary } from "@/lib/data";
 import { formatMoney } from "@/lib/format";
 import ProductImage from "./ProductImage";
 import Rating from "./Rating";
 
-export default function ProductCard({ product: p }: { product: Product }) {
+export default function ProductCard({ product: p }: { product: ProductSummary }) {
   return (
     <article
       className="card h-100 border-0 shadow-sm product-card feature-card"

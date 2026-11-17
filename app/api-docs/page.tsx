@@ -40,6 +40,7 @@ export default function ApiDocs() {
         <li>Offset-based: <code>?offset=40&amp;limit=20</code></li>
         <li className="text-break">Cursor-based: start with <code>?cursor=&amp;limit=20</code>, then pass <code>meta.nextCursor</code> as <code>?cursor=</code> until it is <code>null</code></li>
       </ul>
+      <p className="small text-body-secondary">Add <code>?delay=800</code> (milliseconds, up to 5000) to any list endpoint to simulate a slow server.</p>
       <div className="table-responsive mt-4">
       <table className="table bg-white shadow-sm mb-0" id="endpoints">
         <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
