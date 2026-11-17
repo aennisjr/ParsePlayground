@@ -52,13 +52,21 @@ export default function Home() {
         </div>
 
         <section className="mt-5" aria-labelledby="challenges-heading">
-          <h2 className="h4" id="challenges-heading">Pagination challenges</h2>
-          <p className="text-body-secondary">The same 200 products delivered four ways. Can your scraper collect all of them each time?</p>
+          <h2 className="h4" id="challenges-heading"><Link href="/challenges" className="text-body text-decoration-none">Challenges</Link></h2>
+          <p className="text-body-secondary">Each challenge has a known answer, so you can check your scraper.</p>
+          <h3 className="h6 text-uppercase small text-body-secondary mt-3">Pagination</h3>
           <div className="d-flex flex-wrap gap-2" data-testid="challenge-links">
             <Link href="/products" className="btn btn-outline-dark btn-sm">Numbered pages</Link>
             <Link href="/pagination/cursor" className="btn btn-outline-dark btn-sm">Cursor pages</Link>
             <Link href="/pagination/load-more" className="btn btn-outline-dark btn-sm">Load more button</Link>
             <Link href="/pagination/infinite-scroll" className="btn btn-outline-dark btn-sm">Infinite scroll</Link>
+          </div>
+          <h3 className="h6 text-uppercase small text-body-secondary mt-3">Dynamic content</h3>
+          <div className="d-flex flex-wrap gap-2">
+            <Link href="/dynamic/ajax" className="btn btn-outline-dark btn-sm">AJAX</Link>
+            <Link href="/dynamic/fetch" className="btn btn-outline-dark btn-sm">Fetch API search</Link>
+            <Link href="/dynamic/delayed" className="btn btn-outline-dark btn-sm">Delayed rendering</Link>
+            <Link href="/dynamic/lazy-loading" className="btn btn-outline-dark btn-sm">Lazy loading</Link>
           </div>
         </section>
       </div>

@@ -11,6 +11,7 @@ const ENDPOINTS = [
   ["GET", "/api/products/{id}", "One product including reviews and related product IDs."],
   ["GET", "/api/blog", "List blog posts (without body). Filters: q, category, authorSlug, tag. Sort: publishedAt, title, readingTimeMinutes."],
   ["GET", "/api/blog/{id}", "One post including its sections."],
+  ["GET", "/api/reviews", "All product reviews. Filters: q, productId, rating, verified. Sort: date, rating."],
   ["GET", "/api/jobs", "List jobs. Filters: q, company, city, country, remote, employmentType, salaryCurrency, tag, min_salary. Sort: salaryMin, salaryMax, postedAt, title."],
   ["GET", "/api/jobs/{id}", "One job with responsibilities, requirements and benefits."],
   ["GET", "/api/real-estate", "List properties. Filters: q, listingType, propertyType, city, country, min_beds, min_price, max_price. Sort: price, areaSqm, bedrooms, listedAt."],

@@ -14,6 +14,7 @@ import { join } from "node:path";
 const ROOT = join(import.meta.dirname, "..");
 const DATA_DIR = join(ROOT, "data", "generated");
 const EXPORT_DIR = join(ROOT, "public", "exports");
+const IMAGE_DIR = join(ROOT, "public", "images", "products");
 const REFERENCE_DATE = Date.UTC(2026, 10, 1); // fixed (1 Nov 2026), so dates never drift between builds
 
 // ---------- seeded randomness ----------
@@ -125,6 +126,7 @@ const products = Array.from({ length: 200 }, (_, i) => {
 // Related products: same category, deterministic.
 const productsWithRelated = products.map((p) => ({
   ...p,
+  image: `/images/products/${p.sku}.svg`,
   relatedIds: products.filter((o) => o.category === p.category && o.id !== p.id).slice(0, 4).map((o) => o.id),
 }));
 
@@ -345,6 +347,24 @@ function toHtml(title: string, rows: Record<string, unknown>[]): string {
 
 mkdirSync(DATA_DIR, { recursive: true });
 mkdirSync(EXPORT_DIR, { recursive: true });
+mkdirSync(IMAGE_DIR, { recursive: true });
+
+// One small SVG per product so pages have real image URLs to scrape and lazy-load.
+const CATEGORY_HUES: Record<string, number> = { Laptops: 210, Smartphones: 260, Audio: 330, Wearables: 160, Cameras: 25, Home: 190, Gaming: 285, Accessories: 45 };
+for (const p of products) {
+  const hue = CATEGORY_HUES[p.category] ?? 200;
+  const initials = p.brand.split(/s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  writeFileSync(
+    join(IMAGE_DIR, `${p.sku}.svg`),
+    `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="${xmlEsc(p.name)}">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${hue} 70% 92%)"/><stop offset="1" stop-color="hsl(${hue} 55% 78%)"/></linearGradient></defs>
+<rect width="400" height="400" fill="url(#g)"/>
+<text x="200" y="215" font-family="system-ui, sans-serif" font-size="96" font-weight="700" fill="hsl(${hue} 40% 35%)" text-anchor="middle">${initials}</text>
+<text x="200" y="290" font-family="system-ui, sans-serif" font-size="22" fill="hsl(${hue} 30% 30%)" text-anchor="middle">${xmlEsc(p.sku)}</text>
+</svg>
+`,
+  );
+}
 
 const datasets = {
   products: { rows: productsWithRelated, root: "products", item: "product" },

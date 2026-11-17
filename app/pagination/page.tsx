@@ -42,7 +42,7 @@ const STYLES = [
 export default function PaginationHub() {
   return (
     <div className="container py-4">
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Pagination", href: "/pagination" }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Challenges", href: "/challenges" }, { label: "Pagination", href: "/pagination" }]} />
       <h1 className="h3">Pagination challenges</h1>
       <p className="text-body-secondary col-lg-8">
         The same 200 products, delivered four different ways. Each page has a known answer, so you can check your scraper:

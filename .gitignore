@@ -11,6 +11,7 @@ next-env.d.ts
 # Build-time generated content (recreated by `npm run generate`)
 data/generated/
 public/exports/
+public/images/products/
 
 # Local-only project notes (not published)
 docs/
