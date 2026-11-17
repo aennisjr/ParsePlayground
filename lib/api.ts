@@ -45,6 +45,10 @@ export function respond(
   headers.set("Access-Control-Allow-Origin", "*");
   headers.set("Cache-Control", "public, max-age=60");
   headers.set("Vary", "Accept");
+  // Netlify's CDN ignores the query string in its cache key unless told
+  // otherwise, which made ?offset=, ?cursor=, filters and ?format= all return
+  // the first cached response. Other hosts ignore this header.
+  headers.set("Netlify-Vary", "query,header=Accept");
   const status = opts.status ?? 200;
 
   if (format === "csv") {
