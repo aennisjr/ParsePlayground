@@ -1,0 +1,57 @@
+# Pings /api/health every 5 minutes and appends the result to status.json on
+# the `status` branch. netlify.toml's `ignore` rule stops these commits from
+# triggering Netlify builds. Free for public repositories.
+name: Uptime check
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      SITE_URL: ${{ vars.SITE_URL || 'https://parseplayground.com' }}
+    steps:
+      - name: Check out status branch (create if missing)
+        run: |
+          git init -q status && cd status
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          if git fetch -q --depth=1 origin status; then
+            git checkout -q -b status FETCH_HEAD
+          else
+            git checkout -q --orphan status
+            echo '[]' > status.json
+          fi
+
+      - name: Ping health endpoint
+        working-directory: status
+        run: |
+          start=$(date +%s%3N)
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$SITE_URL/api/health" || echo 000)
+          ms=$(( $(date +%s%3N) - start ))
+          now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          ok=$([ "$code" = "200" ] && echo true || echo false)
+          # keep the last 30 days (8640 checks at 5-minute intervals)
+          jq --arg t "$now" --argjson c "$code" --argjson ms "$ms" --argjson ok "$ok" \
+            '. + [{time: $t, status: $c, ms: $ms, ok: $ok}] | .[-8640:]' status.json > tmp.json
+          mv tmp.json status.json
+          echo "$now $code ${ms}ms"
+
+      - name: Commit result
+        working-directory: status
+        run: |
+          git config user.name "uptime-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add status.json
+          git commit -q -m "uptime: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push -q origin HEAD:status

@@ -1,0 +1,45 @@
+{
+  "_note": "Public test accounts. Every password is password123. Hashes are bcrypt so the login flow is realistic.",
+  "users": [
+    {
+      "username": "standard_user",
+      "displayName": "Standard User",
+      "role": "standard",
+      "passwordHash": "$2b$10$ZQiCzZ6RuNLFLYEmQuYL6eztcfC7nQ6AW.PJxT9o4pgtr.xihPbZW",
+      "locked": false,
+      "loginDelayMs": 0
+    },
+    {
+      "username": "locked_user",
+      "displayName": "Locked User",
+      "role": "standard",
+      "passwordHash": "$2b$10$CpymGObcfCrOF30fTYuQj.gLxn1KqqEGet9nQIszfnqSih8Q86WBK",
+      "locked": true,
+      "loginDelayMs": 0
+    },
+    {
+      "username": "premium_user",
+      "displayName": "Premium User",
+      "role": "premium",
+      "passwordHash": "$2b$10$NnaYMdJr8HJ84x/ocrPVnuanAdbzBVLSjfII70nG0SItMJxWq7f5C",
+      "locked": false,
+      "loginDelayMs": 0
+    },
+    {
+      "username": "admin_user",
+      "displayName": "Admin User",
+      "role": "admin",
+      "passwordHash": "$2b$10$rRo.Vbzm2QRFRtspnPbmEOhuQWlgouhtjKGU2EW1Kq3yuyrIO14jC",
+      "locked": false,
+      "loginDelayMs": 0
+    },
+    {
+      "username": "slow_user",
+      "displayName": "Slow User",
+      "role": "standard",
+      "passwordHash": "$2b$10$ap.OPnYW.emPCcKgLHMfr.oZU1NwagLoKgrCRoQU35zOqcHJxXle2",
+      "locked": false,
+      "loginDelayMs": 5000
+    }
+  ]
+}
