@@ -18,6 +18,7 @@ const NAV = [
   { href: "/jobs", label: "Jobs" },
   { href: "/real-estate", label: "Real estate" },
   { href: "/challenges", label: "Challenges" },
+  { href: "/learn", label: "Learn" },
   { href: "/api-docs", label: "API" },
   { href: "/login", label: "Login" },
   { href: "/dashboard", label: "Dashboard" },
@@ -47,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span>© {new Date().getFullYear()} {SITE_NAME}. Built to be scraped — responsibly.</span>
             <span>
               <a href="/robots.txt">robots.txt</a> · <a href="/sitemap.xml">sitemap.xml</a> ·{" "}
-              <a href="/api/health">status</a>
+              <a href="/learn/terms-of-service#this-site">terms</a> · <a href="/status">status</a>
             </span>
           </div>
         </footer>

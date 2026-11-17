@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DATASETS } from "@/lib/data";
+import { GUIDES } from "@/lib/learn";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -67,6 +68,14 @@ export default function Home() {
             <Link href="/dynamic/fetch" className="btn btn-outline-dark btn-sm">Fetch API search</Link>
             <Link href="/dynamic/delayed" className="btn btn-outline-dark btn-sm">Delayed rendering</Link>
             <Link href="/dynamic/lazy-loading" className="btn btn-outline-dark btn-sm">Lazy loading</Link>
+          </div>
+        </section>
+
+        <section className="mt-5" aria-labelledby="learn-heading">
+          <h2 className="h4" id="learn-heading"><Link href="/learn" className="text-body text-decoration-none">Learn to scrape responsibly</Link></h2>
+          <p className="text-body-secondary">Short guides that use this site&apos;s real robots.txt, rate limits and terms as examples.</p>
+          <div className="d-flex flex-wrap gap-2" data-testid="guide-links">
+            {GUIDES.map((g) => <Link key={g.slug} href={`/learn/${g.slug}`} className="btn btn-outline-dark btn-sm">{g.title}</Link>)}
           </div>
         </section>
       </div>

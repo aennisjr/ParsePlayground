@@ -42,3 +42,50 @@ code.endpoint {
     height: auto;
   }
 }
+/* Code samples in /learn guides */
+.code-block {
+  background: #0f172a;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.code-block figcaption {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.code-block pre {
+  color: #e2e8f0;
+  margin: 0;
+  padding: 0.75rem 1rem 1rem;
+  font-size: 0.85rem;
+}
+.guide h2 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+}
+.guide dt {
+  margin-top: 0.75rem;
+}
+/* /status */
+.status-up {
+  background: #d1e7dd;
+  color: #0a3622;
+}
+.status-down {
+  background: #f8d7da;
+  color: #58151c;
+}
+.status-unknown {
+  background: #e9ecef;
+  color: #343a40;
+}
+.uptime-bars li {
+  height: 2.25rem;
+  min-width: 4px;
+}
+.day-ok { background: #198754; }
+.day-partial { background: #ffc107; }
+.day-down { background: #dc3545; }
+.day-none { background: #dee2e6; }
