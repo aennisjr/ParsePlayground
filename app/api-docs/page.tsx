@@ -32,8 +32,8 @@ export default function ApiDocs() {
       <h1 className="h3">API reference</h1>
       <p className="text-body-secondary">
         All list endpoints return JSON by default. Add <code>?format=xml</code> or <code>?format=csv</code>, or send an{" "}
-        <code>Accept</code> header. Static downloads live under <code>/exports/</code> (e.g.{" "}
-        <a href="/exports/products.csv">products.csv</a>).
+        <code>Accept</code> header. Whole datasets can be downloaded as single files from{" "}
+        <a href="/downloads">Downloads</a> (e.g. <a href="/exports/products.csv">products.csv</a>).
       </p>
       <h2 className="h5 mt-4">Pagination styles</h2>
       <ul>

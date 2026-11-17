@@ -3,6 +3,7 @@
  * CSV), the three pagination styles (page, offset, cursor), and list queries.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { toCsv, xmlNode } from "@/lib/serialize";
 
 export type Format = "json" | "xml" | "csv";
 
@@ -13,26 +14,6 @@ export function negotiateFormat(req: NextRequest): Format {
   if (/application\/xml|text\/xml/.test(accept)) return "xml";
   if (/text\/csv/.test(accept)) return "csv";
   return "json";
-}
-
-const xmlEsc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-function xmlNode(key: string, v: unknown): string {
-  if (Array.isArray(v)) return `<${key}>${v.map((x) => xmlNode("item", x)).join("")}</${key}>`;
-  if (v && typeof v === "object") return `<${key}>${Object.entries(v).map(([k, x]) => xmlNode(k, x)).join("")}</${key}>`;
-  return v == null ? `<${key}/>` : `<${key}>${xmlEsc(String(v))}</${key}>`;
-}
-
-function toCsv(rows: Record<string, unknown>[]): string {
-  if (!rows.length) return "";
-  // Nested objects (e.g. reviews, address) are left out of CSV; arrays of scalars are joined with "|".
-  const isFlat = (v: unknown) => v === null || typeof v !== "object" || (Array.isArray(v) && v.every((x) => typeof x !== "object"));
-  const cols = Object.keys(rows[0]).filter((k) => rows.every((r) => isFlat(r[k])));
-  const esc = (v: unknown) => {
-    const s = v == null ? "" : Array.isArray(v) ? v.join("|") : String(v);
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  return [cols.join(","), ...rows.map((r) => cols.map((c) => esc(r[c])).join(","))].join("\n") + "\n";
 }
 
 export function respond(

@@ -51,6 +51,9 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <p className="small text-body-secondary mt-3">
+          Every dataset is also available as a single <Link href="/downloads">JSON, CSV, XML or HTML download</Link>.
+        </p>
 
         <section className="mt-5" aria-labelledby="challenges-heading">
           <h2 className="h4" id="challenges-heading"><Link href="/challenges" className="text-body text-decoration-none">Challenges</Link></h2>

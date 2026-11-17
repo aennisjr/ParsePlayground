@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span>© {new Date().getFullYear()} {SITE_NAME}. Built to be scraped — responsibly.</span>
             <span>
               <a href="/robots.txt">robots.txt</a> · <a href="/sitemap.xml">sitemap.xml</a> ·{" "}
-              <a href="/learn/terms-of-service#this-site">terms</a> · <a href="/status">status</a>
+              <a href="/downloads">downloads</a> · <a href="/learn/terms-of-service#this-site">terms</a> · <a href="/status">status</a>
             </span>
           </div>
         </footer>

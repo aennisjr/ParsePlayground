@@ -10,6 +10,7 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { toCsv, toHtml, toXml, xmlEsc } from "../lib/serialize.ts";
 
 const ROOT = join(import.meta.dirname, "..");
 const DATA_DIR = join(ROOT, "data", "generated");
@@ -318,33 +319,6 @@ const properties = Array.from({ length: 150 }, (_, i) => {
 });
 
 // ---------- write ----------
-function toCsv(rows: Record<string, unknown>[]): string {
-  // A column is included only if no row holds a nested object in it.
-  const isFlat = (v: unknown) => v === null || typeof v !== "object" || (Array.isArray(v) && v.every((x) => typeof x !== "object"));
-  const cols = Object.keys(rows[0]).filter((k) => rows.every((r) => isFlat(r[k])));
-  const esc = (v: unknown) => {
-    const s = v == null ? "" : Array.isArray(v) ? v.join("|") : String(v);
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-  };
-  return [cols.join(","), ...rows.map((r) => cols.map((c) => esc(r[c])).join(","))].join("\n") + "\n";
-}
-const xmlEsc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-function toXmlValue(key: string, v: unknown): string {
-  if (Array.isArray(v)) return `<${key}>${v.map((x) => toXmlValue("item", x)).join("")}</${key}>`;
-  if (v && typeof v === "object") return `<${key}>${Object.entries(v).map(([k, x]) => toXmlValue(k, x)).join("")}</${key}>`;
-  return v == null ? `<${key}/>` : `<${key}>${xmlEsc(String(v))}</${key}>`;
-}
-const toXml = (root: string, item: string, rows: object[]) =>
-  `<?xml version="1.0" encoding="UTF-8"?>\n<${root}>${rows.map((r) => toXmlValue(item, r)).join("\n")}</${root}>\n`;
-function toHtml(title: string, rows: Record<string, unknown>[]): string {
-  const csv = toCsv(rows).trim().split("\n");
-  const cols = csv[0].split(",");
-  const body = rows
-    .map((r) => `<tr>${cols.map((c) => `<td>${xmlEsc(Array.isArray(r[c]) ? (r[c] as unknown[]).join(", ") : String(r[c] ?? ""))}</td>`).join("")}</tr>`)
-    .join("\n");
-  return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>${title} export</title></head><body>\n<h1>${title}</h1>\n<table id="export">\n<thead><tr>${cols.map((c) => `<th>${c}</th>`).join("")}</tr></thead>\n<tbody>\n${body}\n</tbody></table>\n</body></html>\n`;
-}
-
 mkdirSync(DATA_DIR, { recursive: true });
 mkdirSync(EXPORT_DIR, { recursive: true });
 mkdirSync(IMAGE_DIR, { recursive: true });
@@ -367,17 +341,17 @@ for (const p of products) {
 }
 
 const datasets = {
-  products: { rows: productsWithRelated, root: "products", item: "product" },
-  blog: { rows: blogPosts, root: "posts", item: "post" },
-  jobs: { rows: jobs, root: "jobs", item: "job" },
-  "real-estate": { rows: properties, root: "properties", item: "property" },
+  products: { rows: productsWithRelated, root: "products", item: "product", title: "Products", note: "Reviews are in the JSON and XML exports only" },
+  blog: { rows: blogPosts, root: "posts", item: "post", title: "Blog posts", note: "Article sections are in the JSON and XML exports only" },
+  jobs: { rows: jobs, root: "jobs", item: "job", title: "Jobs", note: "" },
+  "real-estate": { rows: properties, root: "properties", item: "property", title: "Real estate", note: "" },
 };
-for (const [name, { rows, root, item }] of Object.entries(datasets)) {
+for (const [name, { rows, root, item, title, note }] of Object.entries(datasets)) {
   writeFileSync(join(DATA_DIR, `${name}.json`), JSON.stringify(rows, null, 2));
   writeFileSync(join(EXPORT_DIR, `${name}.json`), JSON.stringify(rows, null, 2));
   writeFileSync(join(EXPORT_DIR, `${name}.csv`), toCsv(rows as Record<string, unknown>[]));
   writeFileSync(join(EXPORT_DIR, `${name}.xml`), toXml(root, item, rows));
-  writeFileSync(join(EXPORT_DIR, `${name}.html`), toHtml(name, rows as Record<string, unknown>[]));
+  writeFileSync(join(EXPORT_DIR, `${name}.html`), toHtml(title, rows as Record<string, unknown>[], note));
 }
 writeFileSync(join(DATA_DIR, "authors.json"), JSON.stringify(authors, null, 2));
 writeFileSync(
