@@ -62,7 +62,12 @@ export default function RateLimitTester() {
             </thead>
             <tbody>
               {rows.length === 0 && (
-                <tr><td colSpan={8} className="text-body-secondary text-center py-3">No requests yet. Pick “strict” and send 8 to see a 429.</td></tr>
+                <tr>
+                  <td colSpan={8} className="text-body-secondary text-center py-3">
+                    No requests yet. Pick “strict” and send a few bursts to see a 429. Limits are counted separately on each
+                    server instance, so on the live site it can take more than 6 requests.
+                  </td>
+                </tr>
               )}
               {rows.map((r) => (
                 <tr key={r.n} data-status={r.status}>

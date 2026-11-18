@@ -327,7 +327,7 @@ mkdirSync(IMAGE_DIR, { recursive: true });
 const CATEGORY_HUES: Record<string, number> = { Laptops: 210, Smartphones: 260, Audio: 330, Wearables: 160, Cameras: 25, Home: 190, Gaming: 285, Accessories: 45 };
 for (const p of products) {
   const hue = CATEGORY_HUES[p.category] ?? 200;
-  const initials = p.brand.split(/s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = p.brand.split(/\s+/).filter((w) => /^[a-z]/i.test(w)).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
   writeFileSync(
     join(IMAGE_DIR, `${p.sku}.svg`),
     `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="${xmlEsc(p.name)}">

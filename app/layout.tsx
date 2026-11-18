@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
+import NavMenu from "@/components/NavMenu";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -28,18 +29,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="d-flex flex-column min-vh-100">
-        <nav className="navbar navbar-expand navbar-dark bg-dark" data-testid="main-nav">
-          <div className="container flex-wrap">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark" data-testid="main-nav">
+          <div className="container">
             <Link className="navbar-brand fw-semibold" href="/">
               Parse<span className="text-info">Playground</span>
             </Link>
-            <ul className="navbar-nav ms-auto flex-wrap column-gap-1">
-              {NAV.map((n) => (
-                <li className="nav-item" key={n.href}>
-                  <Link className="nav-link" href={n.href}>{n.label}</Link>
-                </li>
-              ))}
-            </ul>
+            <NavMenu items={NAV} />
           </div>
         </nav>
         <main className="flex-grow-1">{children}</main>
